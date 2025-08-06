@@ -36,7 +36,7 @@ function verificarLembretes() {
 
   // 📌 Lembretes de exames (ano, mês-1, dia)
   const exames = [
-    new Date(2025, 7, 13), // 10 de agosto 2025
+    new Date(2025, 7, 13), // 13 de agosto 2025
   ];
 
   exames.forEach(data => {
@@ -51,5 +51,4 @@ function verificarLembretes() {
 }
 
 // Executa verificação
-// Teste forçado - envia mensagem agora
-enviarMensagem("🚀 Teste: mensagem enviada pelo Twilio com sucesso!");
+verificarLembretes();
