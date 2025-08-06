@@ -1,0 +1,28 @@
+name: Enviar Lembretes
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checar código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Rodar script
+        env:
+          GUPSHUP_API_KEY: ${{ secrets.GUPSHUP_API_KEY }}
+          DESTINO: ${{ secrets.DESTINO }}
+          SOURCE_NUMBER: ${{ secrets.SOURCE_NUMBER }}
+        run: node index.js
