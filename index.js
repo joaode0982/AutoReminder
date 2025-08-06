@@ -7,13 +7,13 @@ const client = twilio(
 );
 
 /**
- * Função que envia mensagem via WhatsApp (Twilio Sandbox)
+ * Função que envia mensagem via WhatsApp
  */
 async function enviarMensagem(mensagem) {
   try {
     const msg = await client.messages.create({
-      from: process.env.TWILIO_WHATSAPP_FROM, // Sandbox: whatsapp:+14155238886
-      to: process.env.TWILIO_WHATSAPP_TO,     // whatsapp:+55XXXXXXXXXXX (número do seu pai)
+      from: process.env.TWILIO_WHATSAPP_FROM, 
+      to: process.env.TWILIO_WHATSAPP_TO,     
       body: mensagem
     });
     console.log("Mensagem enviada com sucesso:", msg.sid);
@@ -29,12 +29,12 @@ function verificarLembretes() {
   const hoje = new Date();
   const diaSemana = hoje.getDay(); // 0 = domingo, 4 = quinta-feira
 
-  // 📌 Lembrete fixo toda sexta-feira
+  //  Lembrete fixo toda sexta-feira
   if (diaSemana === 5) {
     enviarMensagem("📅 Lembrete: PEDIDO DO BOLO CAÇAROLA");
   }
 
-  // 📌 Lembretes de exames (ano, mês-1, dia)
+  //  Lembretes de exames (ano, mês-1, dia)
   const exames = [
     new Date(2025, 7, 13), // 13 de agosto 2025
   ];
