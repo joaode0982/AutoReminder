@@ -9,7 +9,7 @@ async function sendMessage(message) {
             url,
             new URLSearchParams({
                 channel: 'whatsapp',
-                source: '+917834811114',
+                source: process.env.SOURCE_NUMBER,
                 destination: process.env.DESTINY,
                 message: message,
                 'src.name': 'autoreminder'
@@ -37,7 +37,7 @@ function checkReminder() {
         sendMessage('Lembrete: PEDIDO BOLOOOO CAÇAROLACAÇAROLA 🥘');
     }
 
-    // lista exames e consultas (ano, mes-1, dia)
+    // lista exames e consultas (ano, mes-1, dia
     const exams = [
         new Date(2025, 7, 13), // 13 de agosto 2025
     ];
