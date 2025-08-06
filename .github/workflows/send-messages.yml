@@ -1,23 +1,25 @@
-name: Enviar Lembretes
+name: Enviar lembretes WhatsApp
 
 on:
   schedule:
-    - cron: "0 12 * * *"
-  workflow_dispatch:
+    # Rodar todo dia às 10h UTC (7h Brasília)
+    - cron: '0 10 * * *'
+    # Rodar todo dia às 22h UTC (19h Brasília)
+    - cron: '0 22 * * *'
+  workflow_dispatch: 
 
 jobs:
-  send:
+  enviar-mensagem:
     runs-on: ubuntu-latest
     steps:
-      - name: Checar código
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '18'
 
-      - name: Instalar dependencias
+      - name: Instalar dependências
         run: npm install
 
       - name: Rodar script
@@ -26,5 +28,4 @@ jobs:
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
           TWILIO_WHATSAPP_TO: ${{ secrets.TWILIO_WHATSAPP_TO }}
-
         run: node index.js
