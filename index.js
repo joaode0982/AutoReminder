@@ -6,49 +6,61 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-/**
- * Função que envia mensagem via WhatsApp
- */
-async function enviarMensagem(mensagem) {
+// Função de envio
+async function enviarMensagem(texto) {
   try {
-    const msg = await client.messages.create({
-      from: process.env.TWILIO_WHATSAPP_FROM, 
-      to: process.env.TWILIO_WHATSAPP_TO,     
-      body: mensagem
+    const message = await client.messages.create({
+      from: process.env.TWILIO_WHATSAPP_FROM,
+      to: process.env.TWILIO_WHATSAPP_TO,
+      body: texto
     });
-    console.log("Mensagem enviada com sucesso:", msg.sid);
-  } catch (err) {
-    console.error("Erro ao enviar mensagem:", err.message);
+    console.log("Mensagem enviada:", message.sid);
+  } catch (error) {
+    console.error("Erro ao enviar mensagem:", error);
   }
 }
 
-/**
- * Função que verifica lembretes
- */
-function verificarLembretes() {
+// Envia ponto para manter ativo
+async function manterSandboxAtivo() {
+  await enviarMensagem(".");
+}
+
+// Verifica e envia lembretes 
+async function verificarLembretes() {
   const hoje = new Date();
-  const diaSemana = hoje.getDay(); // 0 = domingo, 4 = quinta-feira
+  const diaSemana = hoje.getDay(); 
+  const dataHoje = hoje.toISOString().split('T')[0]; 
 
-  //  Lembrete fixo toda sexta-feira
+  // Data do exame
+  const dataExame = "2025-08-14";
+
+  // Calcula um dia antes do exame
+  const umDiaAntes = new Date(dataExame);
+  umDiaAntes.setDate(umDiaAntes.getDate() - 1);
+  const dataUmDiaAntes = umDiaAntes.toISOString().split('T')[0];
+
+  // Se for sexta
   if (diaSemana === 5) {
-    enviarMensagem("📅 Lembrete: PEDIDO DO BOLO CAÇAROLA");
+    await enviarMensagem("📌 Lembrete: PEDIDO BOLO CAÇAROLA");
   }
 
-  //  Lembretes de exames (ano, mês-1, dia)
-  const exames = [
-    new Date(2025, 7, 13), // 13 de agosto 2025
-  ];
-
-  exames.forEach(data => {
-    if (
-      data.getDate() === hoje.getDate() &&
-      data.getMonth() === hoje.getMonth() &&
-      data.getFullYear() === hoje.getFullYear()
-    ) {
-      enviarMensagem("🏥 Lembrete: Exame marcado para amanhã!");
-    }
-  });
+  // Se for dia anterior ao exam
+  if (dataHoje === dataUmDiaAntes) {
+    await enviarMensagem("🏥 Lembrete de consulta amanhã.");
+  }
 }
 
-// Executa verificação
-verificarLembretes();
+// principal
+async function main() {
+  console.log("Iniciando execução...");
+
+  // envia ponto para manter sandbox ativo
+  await manterSandboxAtivo();
+
+  // verifica lembretes
+  await verificarLembretes();
+
+  console.log("Execução concluída.");
+}
+
+main();
