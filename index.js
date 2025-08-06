@@ -1,56 +1,54 @@
 require('dotenv').config();
-const axios = require('axios');
+const twilio = require('twilio');
 
-async function sendMessage(message) {
-    const url = 'https://api.gupshup.io/sm/api/v1/msg';
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
-    try {
-        const res = await axios.post(
-            url,
-            new URLSearchParams({
-                channel: 'whatsapp',
-                source: process.env.SOURCE_NUMBER,
-                destination: process.env.DESTINY,
-                message: message,
-                'src.name': 'autoreminder'
-            }),
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'apikey': process.env.GUPSHUP_API_KEY
-                }
-            }
-        );
-
-        console.log('Mensagem enviada:', res.data);
-    } catch (err) {
-        console.error('Erro ao enviar mensagem:', err.response?.data || err.message);
-    }
-}
-
-function checkReminder() {
-    const today = new Date();
-    const dayWeek =  today.getDay(); 
-
-    // lembrete toda sexta
-    if (dayWeek === 5) {
-        sendMessage('Lembrete: PEDIDO BOLOOOO CAÇAROLACAÇAROLA 🥘');
-    }
-
-    // lista exames e consultas (ano, mes-1, dia
-    const exams = [
-        new Date(2025, 7, 13), // 13 de agosto 2025
-    ];
-
-    exams.forEach(data => {
-        if (
-            data.getDate() === today.getDate() &&
-            data.getMonth() === today.getMonth() &&
-            data.getFullYear() === today.getFullYear()
-        ) {
-            sendMessage('Lembrete: EXAME MARCADO PARA AMANHÃ 🏥');
-        }
+/**
+ * Função que envia mensagem via WhatsApp (Twilio Sandbox)
+ */
+async function enviarMensagem(mensagem) {
+  try {
+    const msg = await client.messages.create({
+      from: process.env.TWILIO_WHATSAPP_FROM, // Sandbox: whatsapp:+14155238886
+      to: process.env.TWILIO_WHATSAPP_TO,     // whatsapp:+55XXXXXXXXXXX (número do seu pai)
+      body: mensagem
     });
+    console.log("Mensagem enviada com sucesso:", msg.sid);
+  } catch (err) {
+    console.error("Erro ao enviar mensagem:", err.message);
+  }
 }
 
-checkReminder();
+/**
+ * Função que verifica lembretes
+ */
+function verificarLembretes() {
+  const hoje = new Date();
+  const diaSemana = hoje.getDay(); // 0 = domingo, 4 = quinta-feira
+
+  // 📌 Lembrete fixo toda sexta-feira
+  if (diaSemana === 5) {
+    enviarMensagem("📅 Lembrete: PEDIDO DO BOLO CAÇAROLA");
+  }
+
+  // 📌 Lembretes de exames (ano, mês-1, dia)
+  const exames = [
+    new Date(2025, 7, 13), // 10 de agosto 2025
+  ];
+
+  exames.forEach(data => {
+    if (
+      data.getDate() === hoje.getDate() &&
+      data.getMonth() === hoje.getMonth() &&
+      data.getFullYear() === hoje.getFullYear()
+    ) {
+      enviarMensagem("🏥 Lembrete: Exame marcado para amanhã!");
+    }
+  });
+}
+
+// Executa verificação
+verificarLembretes();
