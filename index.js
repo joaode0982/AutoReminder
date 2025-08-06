@@ -51,4 +51,5 @@ function verificarLembretes() {
 }
 
 // Executa verificação
-verificarLembretes();
+// Teste forçado - envia mensagem agora
+enviarMensagem("🚀 Teste: mensagem enviada pelo Twilio com sucesso!");
