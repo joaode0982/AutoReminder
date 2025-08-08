@@ -25,6 +25,12 @@ Este projeto foi criado para enviar:
 
   - 🏥 Lembrete de consulta amanhã.
 
+## Automação de Keep-Alive
+
+Para manter a sessão ativa, é necessário que o dispositivo móvel envie automaticamente um “ponto” duas vezes por dia (ex: 6h58 e 19h) usando um app de automação como MacroDroid, Tasker ou Atalhos (IOS).
+
+Isso renova a janela de execução antes do script principal rodar, garantindo o funcionamento correto do sistema.
+
 
 ---
 
